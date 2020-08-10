@@ -42,8 +42,6 @@ app.put("/repositories/:id", (request, response) => {
   // Get id from route params
   const { id } = request.params;
 
-  console.log(id);
-
   // Check if id exists
   const repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
@@ -69,7 +67,23 @@ app.put("/repositories/:id", (request, response) => {
 });
 
 app.delete("/repositories/:id", (request, response) => {
-  // TODO
+  // Get id from params
+  const { id } = request.params;
+
+  // Find index of repository with same id
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  // If index don't exist, return error
+  if(repositoryIndex < 0){
+    return response.status(404).json({error: "Repository not found."});
+  }
+
+  // If index exists, delete repository 
+  repositories.splice(repositoryIndex, 1);
+
+  // Send feedback response
+  return response.status(200).json({message: `Repository ${id} was deleted!`});
+
 });
 
 app.post("/repositories/:id/like", (request, response) => {
