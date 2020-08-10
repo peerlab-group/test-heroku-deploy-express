@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 const repositories = [];
+const likes = [];
 
 app.get("/repositories", (request, response) => {
   
@@ -47,22 +48,24 @@ app.put("/repositories/:id", (request, response) => {
 
   // If id don't exist return error message
   if(repositoryIndex < 0){
-    return response.status(404).json({error: "Repository not found."});
+    return response.status(400).json({error: "Repository not found."});
   }
 
   // If id exists, get title, url and techs from body
-  const {newTitle, newUrl, newTechs} = request.body;
+  const {title, url, techs} = request.body;
 
   // Restore repository from list
   const repository = repositories[repositoryIndex];
 
+  
+
   // Update project with data from body
-  repository.title = newTitle;
-  repository.url = newUrl;
-  repository.techs = newTechs;
+  repository.title = title;
+  repository.url = url;
+  repository.techs = techs;
 
   // Return updated repository
-  return response.status(200).json({repository});
+  return response.status(200).json(repository);
 
 });
 
@@ -75,14 +78,14 @@ app.delete("/repositories/:id", (request, response) => {
 
   // If index don't exist, return error
   if(repositoryIndex < 0){
-    return response.status(404).json({error: "Repository not found."});
+    return response.status(400).json({error: "Repository not found."});
   }
 
   // If index exists, delete repository 
   repositories.splice(repositoryIndex, 1);
 
   // Send feedback response
-  return response.status(200).json({message: `Repository ${id} was deleted!`});
+  return response.status(204).send();
 
 });
 
@@ -95,7 +98,7 @@ app.post("/repositories/:id/like", (request, response) => {
 
   // If index don't exist, return error
   if(repositoryIndex < 0){
-    return response.status(404).json({error: "Repository not found."});
+    return response.status(400).json({error: "Repository not found."});
   }
 
   // Restore repository from list
@@ -105,7 +108,7 @@ app.post("/repositories/:id/like", (request, response) => {
   repository.likes += 1;
 
   // Send feedback response
-  return response.status(200).json({message: `Repository ${id} now has ${repository.likes} likes`});
+  return response.status(200).json({likes: repository.likes});
 });
 
 module.exports = app;
