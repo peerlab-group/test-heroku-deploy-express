@@ -39,7 +39,33 @@ app.post("/repositories", (request, response) => {
 });
 
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+  // Get id from route params
+  const { id } = request.params;
+
+  console.log(id);
+
+  // Check if id exists
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  // If id don't exist return error message
+  if(repositoryIndex < 0){
+    return response.status(404).json({error: "Repository not found."});
+  }
+
+  // If id exists, get title, url and techs from body
+  const {newTitle, newUrl, newTechs} = request.body;
+
+  // Restore repository from list
+  const repository = repositories[repositoryIndex];
+
+  // Update project with data from body
+  repository.title = newTitle;
+  repository.url = newUrl;
+  repository.techs = newTechs;
+
+  // Return updated repository
+  return response.status(200).json({repository});
+
 });
 
 app.delete("/repositories/:id", (request, response) => {
