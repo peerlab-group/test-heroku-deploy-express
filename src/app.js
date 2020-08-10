@@ -10,7 +10,9 @@ app.use(cors());
 const repositories = [];
 
 app.get("/repositories", (request, response) => {
-  // TODO
+  
+  // List all repositories
+  return response.status(200).json(repositories)
 
 });
 
